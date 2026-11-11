@@ -1,0 +1,6 @@
+.DS_Store
+*.pyc
+__pycache__/
+*.log
+maoyan/desktop/tier_map.json
+config.local.json

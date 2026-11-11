@@ -1,0 +1,108 @@
+{
+  "_说明": "多项目抢票。每个项目放一个 key，脚本用 --project <key> 指定；不带则用第一个。改这里不用动代码。",
+  "browser": {
+    "_backend": "auto=配了 cli_command 就用外部 CLI，否则用 Playwright；也可强制 cli / playwright",
+    "backend": "auto",
+    "_cli_command": "外部浏览器 CLI 的可执行名，留空表示不用。本机填在 config.local.json，别写进这里",
+    "cli_command": "",
+    "_profile": "Playwright 后端的登录态目录（第一次人工登录一次，之后复用）",
+    "profile_dir": "~/.ticket-sniper/chrome-profile",
+    "_headless": "别开。无头容易被票务风控识别",
+    "headless": false
+  },
+  "defaults": {
+    "pre_warm_seconds": 60,
+    "poll": {
+      "api_interval": 10,
+      "seat_interval": 5,
+      "fast_interval": 1.2
+    },
+    "safety": {
+      "_confirm_delay": "锁座后第二次点击的间隔；越小越快，但太快可能只算一次点击",
+      "confirm_delay": 0.6,
+      "_refresh_on_fail": "某个区域点不进去/座位被锁时，刷新页面再战",
+      "refresh_on_fail": true,
+      "max_area_tries": 3,
+      "_allow_cta": "只允许点这些按钮（白名单，防止误点「缺货登记」）",
+      "allow_cta": [
+        "选座购票",
+        "立即购买",
+        "立即预订",
+        "提交",
+        "确认选座",
+        "确定",
+        "确认",
+        "下一步",
+        "去结算",
+        "继续"
+      ],
+      "_deny_cta": "出现这些文案一律不点（黑名单优先于白名单）",
+      "deny_cta": [
+        "缺货登记",
+        "想看",
+        "取消",
+        "返回",
+        "关闭",
+        "删除",
+        "放弃",
+        "退出",
+        "暂不",
+        "售后",
+        "退票",
+        "退款"
+      ],
+      "_auto_pay": "true=选完观演人后点「立即支付」锁座（付款仍需本人）；false=只到确认页",
+      "auto_pay": false
+    }
+  },
+  "projects": {
+    "_示例": "这是占位示例，enabled=false 不会被启动。真实项目建议写在 config.local.json（不进 git）。",
+    "example": {
+      "enabled": false,
+      "name": "示例演出",
+      "platform": "maoyan",
+      "performance_id": "000000",
+      "show_id": "0000000",
+      "sale_time": "",
+      "target": {
+        "area": "内场A1区",
+        "tier_areas": [],
+        "seat_range": [
+          1,
+          80
+        ],
+        "max_price": 2000,
+        "quantity": 1,
+        "_viewers": "实名观演人名字（启动前确认好，脚本运行中不再询问）。不填则永不自动支付",
+        "viewers": []
+      },
+      "mode": "auto",
+      "_mode": "auto=首发没抢到自动转回流；first=只抢首发；restock=直接抢回流",
+      "restock": {
+        "_areas": "回流时允许的区域。留空=全场都可以（默认）；写了只在这些区域里抢",
+        "areas": [],
+        "_seat_range": "回流时的座位号范围。留空=不限",
+        "seat_range": [],
+        "_switch_after_minutes": "首发开票后多少分钟还没抢到，自动转回流",
+        "switch_after_minutes": 5,
+        "_switch_after_miss": "首发有票但抢失败几次后转回流",
+        "switch_after_miss": 1
+      }
+    }
+  },
+  "tongcheng": {
+    "_窗口": "微信里小程序的窗口标题关键字，用 tools/winlist 查",
+    "window_key": "同程旅行",
+    "_按钮": "底部主按钮相对坐标 x1,y1,x2,y2（基准宽 828，其它宽度自动缩放）",
+    "button_rel": [
+      46,
+      1437,
+      732,
+      1524
+    ],
+    "base_width": 828,
+    "_阈值": "HSV 饱和度超过 saturation 视为可购买，售罄态实测约 23%",
+    "saturation": 0.45,
+    "interval": 4
+  }
+}
